@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Internet Protocols using Browser Developer Tools</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+
+background:linear-gradient(135deg,#0F2027,#203A43,#2C5364);
+
+background-size:400% 400%;
+
+animation:bgmove 10s infinite alternate;
+
+padding:40px;
+
+}
+
+@keyframes bgmove{
+
+0%{background-position:left;}
+
+100%{background-position:right;}
+
+}
+
+.container{
+
+max-width:1200px;
+
+margin:auto;
+
+background:white;
+
+border-radius:20px;
+
+overflow:hidden;
+
+box-shadow:0px 15px 35px rgba(0,0,0,.4);
+
+}
+
+.header{
+
+background:linear-gradient(90deg,#0052D4,#4364F7,#6FB1FC);
+
+color:white;
+
+padding:35px;
+
+text-align:center;
+
+}
+
+.header h1{
+
+font-size:40px;
+
+margin-bottom:10px;
+
+}
+
+.header p{
+
+font-size:18px;
+
+}
+
+.content{
+
+padding:35px;
+
+}
+
+.card{
+
+background:#f5f9ff;
+
+padding:25px;
+
+border-radius:15px;
+
+margin-bottom:30px;
+
+box-shadow:0px 8px 18px rgba(0,0,0,.15);
+
+transition:.4s;
+
+}
+
+.card:hover{
+
+transform:translateY(-8px);
+
+}
+
+h2{
+
+color:#003366;
+
+margin-bottom:15px;
+
+}
+
+p{
+
+font-size:17px;
+
+line-height:28px;
+
+color:#444;
+
+}
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+margin-top:20px;
+
+}
+
+th{
+
+background:#0047AB;
+
+color:white;
+
+padding:15px;
+
+}
+
+td{
+
+padding:14px;
+
+text-align:center;
+
+border:1px solid #ddd;
+
+}
+
+tr:nth-child(even){
+
+background:#eef6ff;
+
+}
+
+tr:hover{
+
+background:#d8ebff;
+
+}
+
+.steps{
+
+padding-left:25px;
+
+line-height:32px;
+
+font-size:17px;
+
+}
+
+.footer{
+
+background:#003366;
+
+color:white;
+
+text-align:center;
+
+padding:20px;
+
+font-size:16px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+
+<h1>Internet Protocols Using Browser Developer Tools</h1>
+
+<p>HTML Practical Demonstration</p>
+
+</div>
+
+<div class="content">
+
+<div class="card">
+
+<h2>Objective</h2>
+
+<p>
+
+To observe the communication between a web browser and a web server using the Network tab in Browser Developer Tools.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>Steps to Observe Network Activity</h2>
+
+<ol class="steps">
+
+<li>Open Google Chrome or Microsoft Edge.</li>
+
+<li>Open any website.</li>
+
+<li>Press <b>F12</b> or Right Click → Inspect.</li>
+
+<li>Select the <b>Network</b> tab.</li>
+
+<li>Refresh the webpage.</li>
+
+<li>Observe the network requests.</li>
+
+<li>Click any request to view its details.</li>
+
+</ol>
+
+</div>
+
+<div class="card">
+
+<h2>Observed Parameters</h2>
+
+<table>
+
+<tr>
+
+<th>Parameter</th>
+
+<th>Description</th>
+
+</tr>
+
+<tr>
+
+<td>URL</td>
+
+<td>Address of the requested resource.</td>
+
+</tr>
+
+<tr>
+
+<td>Protocol</td>
+
+<td>HTTP/HTTPS communication protocol.</td>
+
+</tr>
+
+<tr>
+
+<td>Request Method</td>
+
+<td>GET or POST request.</td>
+
+</tr>
+
+<tr>
+
+<td>Status Code</td>
+
+<td>200 OK, 404 Not Found, 500 Server Error etc.</td>
+
+</tr>
+
+<tr>
+
+<td>File Type</td>
+
+<td>HTML, CSS, JavaScript, Image, JSON etc.</td>
+
+</tr>
+
+<tr>
+
+<td>Size</td>
+
+<td>Downloaded file size.</td>
+
+</tr>
+
+<tr>
+
+<td>Loading Time</td>
+
+<td>Time required to load the resource.</td>
+
+</tr>
+
+</table>
+
+</div>
+
+<div class="card">
+
+<h2>Sample Observation</h2>
+
+<table>
+
+<tr>
+
+<th>URL</th>
+
+<th>Protocol</th>
+
+<th>Method</th>
+
+<th>Status</th>
+
+<th>Type</th>
+
+<th>Size</th>
+
+<th>Time</th>
+
+</tr>
+
+<tr>
+
+<td>index.html</td>
+
+<td>HTTPS</td>
+
+<td>GET</td>
+
+<td>200 OK</td>
+
+<td>Document</td>
+
+<td>18 KB</td>
+
+<td>24 ms</td>
+
+</tr>
+
+<tr>
+
+<td>style.css</td>
+
+<td>HTTPS</td>
+
+<td>GET</td>
+
+<td>200 OK</td>
+
+<td>CSS</td>
+
+<td>6 KB</td>
+
+<td>12 ms</td>
+
+</tr>
+
+<tr>
+
+<td>logo.png</td>
+
+<td>HTTPS</td>
+
+<td>GET</td>
+
+<td>200 OK</td>
+
+<td>Image</td>
+
+<td>95 KB</td>
+
+<td>36 ms</td>
+
+</tr>
+
+</table>
+
+</div>
+
+<div class="card">
+
+<h2>Conclusion</h2>
+
+<p>
+
+The Browser Developer Tools Network tab helps analyze webpage requests, monitor loading performance, inspect HTTP/HTTPS protocols, and troubleshoot network-related issues efficiently.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="footer">
+
+© 2026 | Internet Protocols Practical | Information Technology Department
+
+</div>
+
+</div>
+
+</body>
+
+</html>
