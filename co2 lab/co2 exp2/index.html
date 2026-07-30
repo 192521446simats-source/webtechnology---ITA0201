@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Student Registration Form</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+<div class="form-card">
+
+
+<h1>🎓 Student Registration</h1>
+
+<p class="subtitle">
+Fill your details to register
+</p>
+
+
+
+<form id="studentForm">
+
+
+<label>Full Name</label>
+<input type="text" id="name" placeholder="Enter your name">
+<small id="nameError"></small>
+
+
+
+<label>Email</label>
+<input type="text" id="email" placeholder="Enter email">
+<small id="emailError"></small>
+
+
+
+
+<label>Phone Number</label>
+<input type="text" id="phone" placeholder="10 digit mobile number">
+<small id="phoneError"></small>
+
+
+
+
+<label>Gender</label>
+
+<div class="gender">
+
+<input type="radio" name="gender" value="Male"> Male
+
+<input type="radio" name="gender" value="Female"> Female
+
+</div>
+
+<small id="genderError"></small>
+
+
+
+
+<label>Department</label>
+
+<select id="department">
+
+<option value="">Select Department</option>
+
+<option>Computer Science Engineering</option>
+
+<option>Information Technology</option>
+
+<option>Electronics Engineering</option>
+
+<option>Mechanical Engineering</option>
+
+</select>
+
+<small id="deptError"></small>
+
+
+
+
+
+<label>Password</label>
+
+<input type="password" id="password" placeholder="Create password">
+
+<small id="passError"></small>
+
+
+
+
+
+<label>Address</label>
+
+<textarea id="address" placeholder="Enter address"></textarea>
+
+
+
+
+
+<button type="submit">
+Register Now
+</button>
+
+
+<h3 id="success"></h3>
+
+
+</form>
+
+
+</div>
+
+</div>
+
+
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
