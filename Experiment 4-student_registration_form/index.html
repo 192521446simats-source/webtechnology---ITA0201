@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Registration Form</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 450px;
+            background: white;
+            margin: 50px auto;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 15px gray;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a148c;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            width: auto;
+        }
+
+        .btn {
+            text-align: center;
+        }
+
+        button {
+            background: #4a148c;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #7b1fa2;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Student Registration Form</h1>
+
+<form>
+
+<label>Full Name:</label>
+<input type="text" placeholder="Enter your name" required>
+
+
+<label>Email:</label>
+<input type="email" placeholder="Enter your email" required>
+
+
+<label>Password:</label>
+<input type="password" placeholder="Enter password" required>
+
+
+<label>Date of Birth:</label>
+<input type="date">
+
+
+<label>Gender:</label><br>
+<input type="radio" name="gender"> Male
+<input type="radio" name="gender"> Female
+<input type="radio" name="gender"> Other
+<br><br>
+
+
+<label>Department:</label>
+<select>
+    <option>Select Department</option>
+    <option>Computer Science Engineering</option>
+    <option>Information Technology</option>
+    <option>Electronics and Communication Engineering</option>
+    <option>Mechanical Engineering</option>
+</select>
+
+
+<label>Phone Number:</label>
+<input type="tel" placeholder="Enter phone number">
+
+
+<label>Address:</label>
+<textarea rows="4" placeholder="Enter your address"></textarea>
+
+
+<label>Skills:</label><br>
+<input type="checkbox"> HTML
+<input type="checkbox"> CSS
+<input type="checkbox"> JavaScript
+<input type="checkbox"> Python
+<br><br>
+
+
+<div class="btn">
+<button type="submit">Register</button>
+</div>
+
+
+</form>
+
+</div>
+
+</body>
+</html>

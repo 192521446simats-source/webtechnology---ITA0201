@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GET and POST Method Demo</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    padding:40px;
+}
+
+.container{
+    width:90%;
+    max-width:1000px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    color:white;
+    margin-bottom:30px;
+    font-size:38px;
+    text-shadow:2px 2px 6px black;
+}
+
+.card{
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(10px);
+    border-radius:15px;
+    padding:25px;
+    margin-bottom:30px;
+    color:white;
+    box-shadow:0px 10px 25px rgba(0,0,0,0.4);
+}
+
+h2{
+    color:#FFD700;
+    margin-bottom:15px;
+}
+
+p{
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    margin-top:12px;
+    margin-bottom:5px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:6px;
+    margin-bottom:10px;
+    font-size:15px;
+}
+
+input[type=submit]{
+    width:auto;
+    background:#28a745;
+    color:white;
+    padding:10px 25px;
+    cursor:pointer;
+    font-size:16px;
+    margin-top:10px;
+}
+
+input[type=submit]:hover{
+    background:#1f8c37;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    color:black;
+    margin-top:15px;
+}
+
+th{
+    background:#003366;
+    color:white;
+    padding:12px;
+}
+
+td{
+    padding:12px;
+    text-align:center;
+}
+
+tr:nth-child(even){
+    background:#f2f2f2;
+}
+
+.note{
+    background:#fff3cd;
+    color:#000;
+    padding:15px;
+    border-left:6px solid orange;
+    border-radius:5px;
+    margin-bottom:25px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>HTML Form - GET and POST Method Demo</h1>
+
+<div class="note">
+<b>Note:</b> HTML forms support only <b>GET</b> and <b>POST</b> methods.
+</div>
+
+<div class="card">
+
+<h2>GET Method</h2>
+
+<p>
+The <b>GET</b> method sends data through the URL.
+It is commonly used for searching and retrieving information.
+</p>
+
+<form action="index.html" method="get">
+
+<label>Student Name</label>
+<input type="text" name="student_name" placeholder="Enter Student Name">
+
+<label>Department</label>
+<input type="text" name="department" placeholder="Enter Department">
+
+<input type="submit" value="Submit Using GET">
+
+</form>
+
+<p><b>Observation:</b> After clicking the button, check the browser URL.</p>
+
+<p><b>Example:</b></p>
+
+<p>
+index.html?student_name=Rahul&department=IT
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>POST Method</h2>
+
+<p>
+The <b>POST</b> method sends data inside the request body.
+The submitted data is <b>not visible in the URL</b>.
+</p>
+
+<form action="index.html" method="post">
+
+<label>Email</label>
+<input type="email" name="email" placeholder="Enter Email">
+
+<label>Password</label>
+<input type="password" name="password" placeholder="Enter Password">
+
+<input type="submit" value="Submit Using POST">
+
+</form>
+
+<p><b>Observation:</b> The entered information is not displayed in the browser address bar.</p>
+
+</div>
+
+<div class="card">
+
+<h2>Difference Between GET and POST</h2>
+
+<table border="1" cellpadding="10" cellspacing="0">
+
+<tr>
+<th>Feature</th>
+<th>GET</th>
+<th>POST</th>
+</tr>
+
+<tr>
+<td>Purpose</td>
+<td>Retrieve Data</td>
+<td>Submit Data</td>
+</tr>
+
+<tr>
+<td>Data Visibility</td>
+<td>Visible in URL</td>
+<td>Hidden from URL</td>
+</tr>
+
+<tr>
+<td>Security</td>
+<td>Less Secure</td>
+<td>More Secure</td>
+</tr>
+
+<tr>
+<td>Data Length</td>
+<td>Limited</td>
+<td>No Practical Limit</td>
+</tr>
+
+<tr>
+<td>Example</td>
+<td>Search Form</td>
+<td>Login Form</td>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+</html>
