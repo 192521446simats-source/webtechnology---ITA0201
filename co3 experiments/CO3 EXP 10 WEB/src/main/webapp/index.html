@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Thread-Safe Concurrent Visitor Counter — CO3 · Experiment 10</title>
+<meta name="description" content="A lab demonstration of servlet concurrency: an unsafe visitor counter vs. a thread-safe AtomicInteger counter, running on Apache Tomcat." />
+<link rel="stylesheet" href="style.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2224%22 fill=%22%234f46e5%22/><text x=%2250%22 y=%2266%22 font-size=%2255%22 fill=%22white%22 text-anchor=%22middle%22 font-family=%22monospace%22>#</text></svg>" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container navbar-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">{#}</span>
+      <span class="brand-text">CO3 · EXP 10<small>Web Technology Lab</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Overview</a>
+      <a href="dashboard.html">Live Dashboard</a>
+      <a href="#compare">Comparison</a>
+      <a href="#stack">Stack</a>
+    </div>
+    <a href="dashboard.html" class="btn btn-primary btn-sm">
+      Open Live Demonstration
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container hero-inner">
+    <span class="eyebrow"><span class="dot"></span> CO3 · Experiment 10 · Web Technology</span>
+    <h1>Thread-Safe Concurrent<br>Visitor Counter</h1>
+    <p class="subtitle">jakarta.servlet.http.HttpServlet &nbsp;·&nbsp; java.util.concurrent.atomic.AtomicInteger</p>
+    <p class="desc">
+      This experiment demonstrates servlet concurrency, race conditions, and
+      thread-safe shared variables. A single servlet instance handles many
+      concurrent requests on many threads — this lab puts an unsafe counter
+      and a thread-safe counter side by side on the exact same backend so
+      you can watch the difference happen live.
+    </p>
+    <div class="hero-cta">
+      <a href="dashboard.html" class="btn btn-primary">
+        Open Live Demonstration
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="#compare" class="btn btn-ghost">See the comparison</a>
+    </div>
+  </div>
+</header>
+
+<section id="stack" class="stack-strip">
+  <div class="container">
+    <span class="stack-item"><span class="sq"></span>Jakarta Servlet API 6.0</span>
+    <span class="stack-item"><span class="sq"></span>Apache Tomcat 10.1+</span>
+    <span class="stack-item"><span class="sq"></span>Maven WAR Packaging</span>
+    <span class="stack-item"><span class="sq"></span>AtomicInteger</span>
+    <span class="stack-item"><span class="sq"></span>GET /counter</span>
+  </div>
+</section>
+
+<section id="compare" class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Same servlet, two strategies</span>
+      <h2>Unsafe vs. thread-safe</h2>
+      <p>Both counters live inside the same <code>VisitorCounterServlet</code> and are incremented on every request — only their implementation differs.</p>
+    </div>
+
+    <div class="compare-grid">
+
+      <div class="compare-card unsafe">
+        <div class="compare-top">
+          <div class="compare-icon unsafe">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+          </div>
+          <span class="status-tag unsafe">NOT THREAD-SAFE</span>
+        </div>
+        <h3>Unsafe Counter</h3>
+        <div class="compare-sub">private int unsafeCounter = 0;</div>
+        <ul class="compare-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg> Uses a normal servlet instance variable</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg> Multiple servlet threads access the same variable</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg> Read → modify → write happens in three separate steps</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg> Can produce race conditions and lost updates</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg> Not safe for concurrent requests</li>
+        </ul>
+      </div>
+
+      <div class="compare-card safe">
+        <div class="compare-top">
+          <div class="compare-icon safe">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M12 3l8 4v5c0 5-3.4 8.4-8 9-4.6-.6-8-4-8-9V7l8-4z"/></svg>
+          </div>
+          <span class="status-tag safe">THREAD-SAFE</span>
+        </div>
+        <h3>Thread-Safe Counter</h3>
+        <div class="compare-sub">private final AtomicInteger safeCounter = new AtomicInteger(0);</div>
+        <ul class="compare-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> Uses <code>AtomicInteger</code> instead of a plain <code>int</code></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> Increment is a single atomic compare-and-swap operation</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> No thread can observe a partial update</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> Prevents lost updates under concurrency</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> Safe for any number of concurrent servlet requests</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Ready when you are</span>
+      <h2>Fire concurrent requests and watch them race</h2>
+      <p>The dashboard talks to the real <code>/counter</code> servlet endpoint, fires 10 simultaneous requests with <code>Promise.all()</code>, and shows you exactly where the unsafe counter falls behind.</p>
+    </div>
+    <div style="text-align:center;">
+      <a href="dashboard.html" class="btn btn-primary">
+        Open Live Demonstration
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <strong>CO3 · Experiment 10 · Web Technology</strong> — Thread-Safe Concurrent Visitor Counter<br>
+    Built with Jakarta Servlet API &amp; Apache Tomcat
+  </div>
+</footer>
+
+</body>
+</html>

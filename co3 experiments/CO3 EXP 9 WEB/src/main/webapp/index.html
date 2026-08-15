@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Servlet Lifecycle — CO3 · Experiment 9 · Web Technology</title>
+<meta name="description" content="An interactive lab demonstration of the Java Servlet lifecycle: constructor, init(), doGet(), and destroy() — running on Apache Tomcat." />
+<link rel="stylesheet" href="style.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2224%22 fill=%22%234f46e5%22/><text x=%2250%22 y=%2266%22 font-size=%2255%22 fill=%22white%22 text-anchor=%22middle%22 font-family=%22monospace%22>{}</text></svg>" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container navbar-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">{S}</span>
+      <span class="brand-text">CO3 · EXP 9<small>Web Technology Lab</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Overview</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="#features">Lifecycle</a>
+      <a href="#stack">Stack</a>
+    </div>
+    <a href="dashboard.html" class="btn btn-primary btn-sm">
+      Launch Demonstration
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container hero-inner">
+    <span class="eyebrow"><span class="dot"></span> CO3 · Experiment 9 · Web Technology</span>
+    <h1>Servlet Lifecycle</h1>
+    <p class="subtitle">jakarta.servlet.http.HttpServlet&nbsp;·&nbsp;deployed on Apache Tomcat 10.1+</p>
+    <p class="desc">
+      This lab walks through exactly how a servlet container manages a Java servlet
+      from birth to shutdown — the constructor and <code>init()</code> that run once,
+      the <code>doGet()</code> that answers every request, and the <code>destroy()</code>
+      that cleans up when the app stops. Every action below is backed by a real,
+      deployable servlet — not a simulation.
+    </p>
+    <div class="hero-cta">
+      <a href="dashboard.html" class="btn btn-primary">
+        Launch Demonstration
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="#features" class="btn btn-ghost">See the four phases</a>
+    </div>
+    <div class="hero-endpoint">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 20l9-16H3z"/></svg>
+      Servlet endpoint: <b>/lifecycle</b>
+    </div>
+  </div>
+</header>
+
+<section id="stack" class="stack-strip">
+  <div class="container">
+    <span class="stack-item"><span class="sq"></span>Jakarta Servlet API 6.0</span>
+    <span class="stack-item"><span class="sq"></span>Apache Tomcat 10.1+</span>
+    <span class="stack-item"><span class="sq"></span>Maven WAR Packaging</span>
+    <span class="stack-item"><span class="sq"></span>HttpServlet</span>
+    <span class="stack-item"><span class="sq"></span>web.xml Mapping</span>
+  </div>
+</section>
+
+<section id="features" class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Four phases, one instance</span>
+      <h2>How the container drives the servlet</h2>
+      <p>The Tomcat container calls these methods in a strict, ordered sequence over the life of a single servlet instance.</p>
+    </div>
+
+    <div class="feature-grid">
+
+      <div class="feature-card">
+        <span class="feature-step">PHASE 01</span>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9 9h6v6H9z"/></svg>
+        </div>
+        <h3>Constructor</h3>
+        <p>Creates the <code>LifecycleServlet</code> instance. Runs exactly once, the moment the container loads the servlet class.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-step">PHASE 02</span>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+        </div>
+        <h3><code>init()</code></h3>
+        <p>Initializes the servlet — one-time setup — before it is allowed to handle any client request.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-step">PHASE 03</span>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M4 6h16M4 18h10"/></svg>
+        </div>
+        <h3><code>doGet()</code> / <code>service()</code></h3>
+        <p>Handles every HTTP GET request. Runs again and again — once per request — for the servlet's entire lifetime.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-step">PHASE 04</span>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m3 0-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+        </div>
+        <h3><code>destroy()</code></h3>
+        <p>Releases resources when the servlet is stopped, undeployed, or redeployed by the container. Runs exactly once.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Ready when you are</span>
+      <h2>Watch it happen in real time</h2>
+      <p>The dashboard calls the live <code>/lifecycle</code> endpoint, counts real requests, and mirrors the exact lines printed to the Tomcat console.</p>
+    </div>
+    <div style="text-align:center;">
+      <a href="dashboard.html" class="btn btn-primary">
+        Launch Demonstration
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <strong>CO3 · Experiment 9 · Web Technology</strong> — Servlet Lifecycle Demonstration<br>
+    Built with Jakarta Servlet API &amp; Apache Tomcat
+  </div>
+</footer>
+
+</body>
+</html>

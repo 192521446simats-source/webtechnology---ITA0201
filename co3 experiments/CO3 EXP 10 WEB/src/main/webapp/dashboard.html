@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Live Dashboard — Thread-Safe Concurrent Visitor Counter</title>
+<meta name="description" content="Live dashboard comparing an unsafe visitor counter and a thread-safe AtomicInteger counter, backed by a real Java servlet." />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container navbar-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">{#}</span>
+      <span class="brand-text">CO3 · EXP 10<small>Web Technology Lab</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Overview</a>
+      <a href="dashboard.html" class="active">Live Dashboard</a>
+      <a href="#log">Execution Log</a>
+      <a href="#conclusion">Conclusion</a>
+    </div>
+    <a href="index.html" class="btn btn-ghost btn-sm">← Back home</a>
+  </div>
+</nav>
+
+<header class="dash-hero">
+  <div class="container">
+    <div class="dash-hero-top">
+      <div class="dash-title">
+        <span class="eyebrow"><span class="dot"></span> Live Servlet Session</span>
+        <h1>Live Visitor Counters</h1>
+        <p>Every button below sends real HTTP requests to <code>/counter</code> on <code>VisitorCounterServlet</code>. Nothing here is a JavaScript-only simulation of the backend.</p>
+      </div>
+      <span id="modePill" class="status-pill preview"><span class="dot"></span> Checking connection…</span>
+    </div>
+
+    <div id="previewNotice" class="notice-banner" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      <span>
+        <b>Preview mode.</b> No live servlet is reachable from this page, so the counters below are simulated locally
+        (including an occasional simulated lost update, to illustrate the concept). Deploy <code>CO3-EXP10-WEB.war</code>
+        to Tomcat and open <code>http://localhost:8080/CO3-EXP10-WEB/dashboard.html</code> to see real
+        <code>/counter</code> responses and a genuine, timing-dependent race condition.
+      </span>
+    </div>
+
+    <div class="counter-pair">
+      <div class="counter-box unsafe">
+        <div class="counter-box-top">
+          <span class="counter-box-label">Unsafe Counter</span>
+          <span class="status-tag unsafe">int</span>
+        </div>
+        <div id="unsafeValue" class="counter-value unsafe">0</div>
+        <div class="counter-hint">private int unsafeCounter — shared, not atomic</div>
+      </div>
+      <div class="counter-box safe">
+        <div class="counter-box-top">
+          <span class="counter-box-label">Thread-Safe Counter</span>
+          <span class="status-tag safe">AtomicInteger</span>
+        </div>
+        <div id="safeValue" class="counter-value safe">0</div>
+        <div class="counter-hint">safeCounter.incrementAndGet() — atomic, never loses an update</div>
+      </div>
+    </div>
+
+    <div class="dash-actions">
+      <button id="sendOneBtn" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        Send Request
+      </button>
+      <button id="sendTenBtn" class="btn btn-ghost">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Send 10 Requests
+      </button>
+      <button id="resetBtn" class="btn btn-outline-red">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        Reset Counters
+      </button>
+    </div>
+
+    <div id="gapBanner" class="gap-banner ok" style="display:none;"></div>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:26px;">
+      <span class="kicker">The real test</span>
+      <h2>Concurrent Request Test</h2>
+      <p>Send 10 requests simultaneously and compare how each counter handles the burst.</p>
+    </div>
+
+    <div class="compare-table-wrap" style="padding:26px 28px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+        <div>
+          <h3 style="font-family:var(--font-display); margin:0 0 6px; font-size:1.1rem;">Send 10 Requests Simultaneously</h3>
+          <p style="margin:0; color:var(--muted); font-size:0.9rem; max-width:520px;">
+            Fires 10 concurrent <code>fetch("/counter")</code> calls using <code>Promise.all()</code>, waits for every
+            response, then reports the final unsafe and safe counter values.
+          </p>
+        </div>
+        <button id="concurrentTestBtn" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Run Concurrency Test
+        </button>
+      </div>
+      <div id="testResult" style="margin-top:20px; display:none;"></div>
+    </div>
+
+    <p style="text-align:center; color:var(--muted); font-size:0.85rem; max-width:640px; margin:22px auto 0;">
+      Note: the race condition is timing-dependent on thread scheduling, so it becomes more likely under higher
+      concurrency but is not guaranteed to reproduce on every single click, browser, or machine.
+    </p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:26px;">
+      <span class="kicker">Root cause</span>
+      <h2>Why does this happen?</h2>
+    </div>
+
+    <div class="vflow">
+      <div class="vflow-node">Multiple Browser Requests</div>
+      <div class="vflow-arrow-v"><svg viewBox="0 0 18 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 1v18M3 13l6 6 6-6"/></svg></div>
+      <div class="vflow-node">Multiple Servlet Threads</div>
+      <div class="vflow-arrow-v"><svg viewBox="0 0 18 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 1v18M3 13l6 6 6-6"/></svg></div>
+      <div class="vflow-node">Same Servlet Instance</div>
+      <div class="vflow-arrow-v"><svg viewBox="0 0 18 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 1v18M3 13l6 6 6-6"/></svg></div>
+      <div class="vflow-node">Shared Instance Variable</div>
+      <div class="vflow-arrow-v"><svg viewBox="0 0 18 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 1v18M3 13l6 6 6-6"/></svg></div>
+      <div class="vflow-node danger">Race Condition</div>
+    </div>
+
+    <p style="text-align:center; max-width:640px; margin:26px auto 0; color:var(--ink-soft);">
+      Servlet containers commonly use multiple threads to process requests. A servlet instance can therefore be
+      accessed by multiple request threads at the same time — and any mutable field on that instance is fair game
+      for all of them, concurrently.
+    </p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:26px;">
+      <span class="kicker">Show me the code</span>
+      <h2>Unsafe vs. thread-safe implementation</h2>
+    </div>
+
+    <div class="code-grid">
+      <div>
+        <div class="code-block">
+          <div class="code-top"><span>UnsafeIncrement.java</span><span>UNSAFE</span></div>
+          <pre><span class="kw">private</span> <span class="tp">int</span> visitorCount = <span class="fn">0</span>;
+
+<span class="tp">int</span> current = visitorCount;         <span class="cm">// 1. READ</span>
+visitorCount = current + <span class="fn">1</span>;        <span class="cm">// 2. WRITE</span></pre>
+        </div>
+        <div class="callout warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+          <span>Two threads can read the same value and overwrite each other's updates.</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="code-block">
+          <div class="code-top"><span>SafeIncrement.java</span><span>THREAD-SAFE</span></div>
+          <pre><span class="kw">private final</span> AtomicInteger visitorCount =
+        <span class="kw">new</span> AtomicInteger(<span class="fn">0</span>);
+
+<span class="tp">int</span> current =
+        visitorCount.<span class="fn">incrementAndGet</span>();  <span class="cm">// atomic</span></pre>
+        </div>
+        <div class="callout success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <span>AtomicInteger performs the increment atomically, preventing lost updates.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:10px;">
+      <span class="kicker">Scope matters</span>
+      <h2>Why are local variables safer?</h2>
+      <p>Not every variable in a servlet needs protecting — it depends entirely on where it lives.</p>
+    </div>
+
+    <div class="var-grid">
+      <div class="var-card instance">
+        <span class="tag">SHARED</span>
+        <h4>Instance variable</h4>
+        <div class="code-block" style="margin-bottom:12px;">
+          <pre style="padding:14px 16px;"><span class="kw">private</span> <span class="tp">int</span> count;</pre>
+        </div>
+        <p>Declared on the servlet class. One copy exists for the whole servlet instance, and it is shared between
+        every request thread the container ever dispatches to that instance. Mutating it needs explicit protection.</p>
+      </div>
+
+      <div class="var-card local">
+        <span class="tag">PER-REQUEST</span>
+        <h4>Local variable</h4>
+        <div class="code-block" style="margin-bottom:12px;">
+          <pre style="padding:14px 16px;"><span class="kw">protected void</span> doGet(...) {
+    <span class="tp">int</span> requestNumber = <span class="fn">10</span>;
+}</pre>
+        </div>
+        <p>Declared inside a method. It belongs to that one method invocation and is stored on that thread's own
+        call stack — no other thread can see or touch it. It is therefore always safe, with zero synchronization.</p>
+      </div>
+    </div>
+
+    <p style="text-align:center; max-width:680px; margin:26px auto 0; color:var(--ink-soft);">
+      Local variables belong to the individual method invocation and are stored separately for each executing
+      thread. They are therefore safer for request-specific data — the same servlet can process a thousand
+      concurrent requests and every one of them gets its own private <code>requestNumber</code>.
+    </p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:26px;">
+      <span class="kicker">At a glance</span>
+      <h2>Comparison table</h2>
+    </div>
+
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr><th>Feature</th><th>Unsafe Counter</th><th>Thread-Safe Counter</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Shared instance variable</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+          <tr><td>Race condition possible</td><td class="yes">Yes</td><td class="no">No</td></tr>
+          <tr><td>Atomic operation</td><td class="no">No</td><td class="yes">Yes</td></tr>
+          <tr><td>Concurrent access safe</td><td class="no">No</td><td class="yes">Yes</td></tr>
+          <tr><td>Implementation</td><td><code>int</code></td><td><code>AtomicInteger</code></td></tr>
+          <tr><td>Recommended</td><td class="no">No</td><td class="yes">Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="log" class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:26px;">
+      <span class="kicker">console.log</span>
+      <h2>Execution log</h2>
+      <p>Mirrors what the servlet prints to the Tomcat console for each request thread.</p>
+    </div>
+
+    <div class="console-panel">
+      <div class="console-topbar">
+        <div class="console-dots"><span></span><span></span><span></span></div>
+        <div class="console-title">tomcat — VisitorCounterServlet — /counter</div>
+      </div>
+      <div id="consoleBody" class="console-body"></div>
+    </div>
+  </div>
+</section>
+
+<section id="conclusion" class="section">
+  <div class="container">
+    <div class="conclusion-card">
+      <span class="kicker">Conclusion</span>
+      <p>
+        Servlets are multi-threaded by nature. Shared mutable instance variables must be protected when multiple
+        requests can access them concurrently. AtomicInteger provides a simple and efficient solution for counters.
+        Local variables are safer for request-specific data because each request has its own method invocation.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <strong>CO3 · Experiment 10 · Web Technology</strong> — Thread-Safe Concurrent Visitor Counter<br>
+    Built with Jakarta Servlet API &amp; Apache Tomcat
+  </div>
+</footer>
+
+<script>
+(function () {
+  const ENDPOINT = "counter"; // resolves to /<context-path>/counter
+  const modePill = document.getElementById("modePill");
+  const previewNotice = document.getElementById("previewNotice");
+  const unsafeValueEl = document.getElementById("unsafeValue");
+  const safeValueEl = document.getElementById("safeValue");
+  const consoleBody = document.getElementById("consoleBody");
+  const gapBanner = document.getElementById("gapBanner");
+  const testResult = document.getElementById("testResult");
+
+  const sendOneBtn = document.getElementById("sendOneBtn");
+  const sendTenBtn = document.getElementById("sendTenBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const concurrentTestBtn = document.getElementById("concurrentTestBtn");
+
+  let liveMode = null;
+  let threadCounter = 0;
+
+  // Local simulation state, used only when no live servlet is reachable.
+  let simUnsafe = 0;
+  let simSafe = 0;
+
+  function timestamp() {
+    return new Date().toTimeString().slice(0, 8) + "." + String(new Date().getMilliseconds()).padStart(3, "0");
+  }
+
+  function appendLog(text, cls) {
+    const line = document.createElement("div");
+    line.className = "console-line" + (cls ? " " + cls : "");
+    line.innerHTML = '<span class="ts">[' + timestamp() + ']</span><span class="msg">' + text + "</span>";
+    consoleBody.appendChild(line);
+    consoleBody.scrollTop = consoleBody.scrollHeight;
+  }
+
+  function setMode(isLive) {
+    liveMode = isLive;
+    if (isLive) {
+      modePill.className = "status-pill live";
+      modePill.innerHTML = '<span class="dot"></span> Connected to Tomcat';
+      previewNotice.style.display = "none";
+    } else {
+      modePill.className = "status-pill preview";
+      modePill.innerHTML = '<span class="dot"></span> Preview mode';
+      previewNotice.style.display = "flex";
+    }
+  }
+
+  function setCounters(unsafe, safe) {
+    if (unsafeValueEl.textContent !== String(unsafe)) {
+      unsafeValueEl.textContent = unsafe;
+      bump(unsafeValueEl);
+    }
+    if (safeValueEl.textContent !== String(safe)) {
+      safeValueEl.textContent = safe;
+      bump(safeValueEl);
+    }
+  }
+
+  function bump(el) {
+    el.classList.remove("bump");
+    void el.offsetWidth;
+    el.classList.add("bump");
+  }
+
+  function nextThreadName() {
+    threadCounter++;
+    return "http-nio-8080-exec-" + threadCounter;
+  }
+
+  // ---- Real servlet call --------------------------------------------
+  async function callServletOnce(logPrefix) {
+    const threadName = nextThreadName();
+    appendLog((logPrefix || "Thread") + " " + threadName + " → Request received", "info");
+    try {
+      const res = await fetch(ENDPOINT, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      if (liveMode !== true) setMode(true);
+      appendLog(threadName + " → unsafe=" + data.unsafe + ", safe=" + data.safe, "ok");
+      return { ok: true, unsafe: data.unsafe, safe: data.safe, threadName: data.thread || threadName };
+    } catch (err) {
+      if (liveMode !== false) setMode(false);
+      // Local simulation fallback, including an occasional simulated lost update
+      // on the "unsafe" path to keep the concept visible without a backend.
+      const before = simUnsafe;
+      const raceLost = Math.random() < 0.25; // simulate an occasional lost update
+      simSafe = simSafe + 1;
+      simUnsafe = raceLost ? before : before + 1;
+      appendLog(threadName + " → unsafe=" + simUnsafe + ", safe=" + simSafe + (raceLost ? "  (simulated lost update)" : ""), raceLost ? "warn" : "ok");
+      return { ok: true, unsafe: simUnsafe, safe: simSafe, threadName: threadName, simulated: true };
+    }
+  }
+
+  async function sendOne() {
+    sendOneBtn.disabled = true;
+    const result = await callServletOnce();
+    setCounters(result.unsafe, result.safe);
+    sendOneBtn.disabled = false;
+  }
+
+  async function sendTen() {
+    sendTenBtn.disabled = true;
+    appendLog("— Sending 10 requests sequentially —", "amber");
+    for (let i = 0; i < 10; i++) {
+      const result = await callServletOnce();
+      setCounters(result.unsafe, result.safe);
+    }
+    sendTenBtn.disabled = false;
+  }
+
+  async function resetCounters() {
+    resetBtn.disabled = true;
+    try {
+      const res = await fetch(ENDPOINT + "?reset=true", { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      setMode(true);
+      setCounters(data.unsafe, data.safe);
+      appendLog("COUNTERS RESET (unsafe=0, safe=0)", "warn");
+    } catch (err) {
+      setMode(false);
+      simUnsafe = 0;
+      simSafe = 0;
+      setCounters(0, 0);
+      appendLog("COUNTERS RESET (simulated)", "warn");
+    }
+    gapBanner.style.display = "none";
+    testResult.style.display = "none";
+    resetBtn.disabled = false;
+  }
+
+  async function runConcurrencyTest() {
+    concurrentTestBtn.disabled = true;
+    testResult.style.display = "none";
+    gapBanner.style.display = "none";
+
+    const beforeUnsafe = parseInt(unsafeValueEl.textContent, 10);
+    const beforeSafe = parseInt(safeValueEl.textContent, 10);
+
+    appendLog("— Firing 10 concurrent requests via Promise.all() —", "amber");
+
+    const requests = [];
+    for (let i = 0; i < 10; i++) {
+      requests.push(callServletOnce("Concurrent"));
+    }
+    const results = await Promise.all(requests);
+
+    const last = results[results.length - 1];
+    setCounters(last.unsafe, last.safe);
+
+    const unsafeGain = last.unsafe - beforeUnsafe;
+    const safeGain = last.safe - beforeSafe;
+    const lost = 10 - unsafeGain;
+
+    testResult.style.display = "block";
+    testResult.innerHTML =
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;">' +
+      statBox("Requests sent", "10") +
+      statBox("Unsafe counter gained", "+" + unsafeGain, unsafeGain < 10 ? "var(--red-600)" : "var(--green-600)") +
+      statBox("Safe counter gained", "+" + safeGain, "var(--green-600)") +
+      statBox("Updates lost (unsafe)", lost > 0 ? lost : "0", lost > 0 ? "var(--red-600)" : "var(--green-600)") +
+      "</div>";
+
+    gapBanner.style.display = "flex";
+    if (lost > 0) {
+      gapBanner.className = "gap-banner lost";
+      gapBanner.innerHTML = "⚠ Race condition observed: the unsafe counter lost <b>" + lost + "</b> update" + (lost === 1 ? "" : "s") + ". The safe counter correctly gained all 10.";
+    } else {
+      gapBanner.className = "gap-banner ok";
+      gapBanner.innerHTML = "✓ No lost updates this run — the unsafe counter got lucky with thread timing. Try again; the race is timing-dependent and becomes more likely under load.";
+    }
+
+    concurrentTestBtn.disabled = false;
+  }
+
+  function statBox(label, value, color) {
+    return '<div style="background:var(--bg-soft);border-radius:12px;padding:14px 16px;">' +
+      '<div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;">' + label + '</div>' +
+      '<div style="font-family:var(--font-display);font-size:1.5rem;font-weight:700;margin-top:4px;' + (color ? "color:" + color + ";" : "") + '">' + value + '</div>' +
+      '</div>';
+  }
+
+  sendOneBtn.addEventListener("click", sendOne);
+  sendTenBtn.addEventListener("click", sendTen);
+  resetBtn.addEventListener("click", resetCounters);
+  concurrentTestBtn.addEventListener("click", runConcurrencyTest);
+
+  // Establish connection state on load, without incrementing counters.
+  (async function bootstrap() {
+    try {
+      const res = await fetch(ENDPOINT + "?reset=true", { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      setMode(true);
+      setCounters(data.unsafe, data.safe);
+      appendLog("Dashboard connected — counters initialized (unsafe=0, safe=0)", "ok");
+    } catch (err) {
+      setMode(false);
+      setCounters(0, 0);
+      appendLog("No live servlet detected — running in preview/simulation mode", "warn");
+    }
+  })();
+})();
+</script>
+
+</body>
+</html>

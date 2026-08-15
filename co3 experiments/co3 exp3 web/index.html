@@ -1,0 +1,1200 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Campus Event Registration</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+
+        body {
+            min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #667eea,
+                    #764ba2
+                );
+
+            padding: 35px 20px;
+        }
+
+
+        .container {
+            max-width: 1050px;
+            margin: auto;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================== */
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+
+        .header .icon {
+            font-size: 50px;
+            margin-bottom: 8px;
+        }
+
+
+        .header h1 {
+            font-size: 38px;
+            margin-bottom: 8px;
+        }
+
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+
+        /* =========================
+           MAIN AREA
+        ========================== */
+
+        .main {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 25px;
+        }
+
+
+        /* =========================
+           REGISTRATION CARD
+        ========================== */
+
+        .registration-card {
+
+            background:
+                rgba(255, 255, 255, 0.96);
+
+            padding: 32px;
+
+            border-radius: 24px;
+
+            box-shadow:
+                0 20px 45px
+                rgba(0, 0, 0, 0.22);
+        }
+
+
+        .registration-card h2 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+
+        .subtitle {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+
+        /* =========================
+           INPUT GROUP
+        ========================== */
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+
+        .input-group label {
+            display: block;
+
+            color: #444;
+
+            font-weight: 600;
+
+            margin-bottom: 7px;
+        }
+
+
+        .input-group input,
+        .input-group select {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border:
+                2px solid #e5e5e5;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            font-size: 14px;
+
+            transition: 0.3s;
+        }
+
+
+        .input-group input:focus,
+        .input-group select:focus {
+
+            border-color: #667eea;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(102, 126, 234, 0.12);
+        }
+
+
+        /* =========================
+           FOCUS / BLUR DEMO
+        ========================== */
+
+        .focus-message {
+
+            font-size: 12px;
+
+            color: #667eea;
+
+            margin-top: 5px;
+
+            min-height: 17px;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================== */
+
+        .register-btn {
+
+            width: 100%;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #667eea,
+                    #764ba2
+                );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+
+        .register-btn:hover {
+
+            transform:
+                translateY(-3px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(102, 126, 234, 0.4);
+        }
+
+
+        /* =========================
+           INTRINSIC BUTTON
+        ========================== */
+
+        .intrinsic-btn {
+
+            width: 100%;
+
+            margin-top: 12px;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #2f3542;
+
+            color: white;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+
+        .intrinsic-btn:hover {
+
+            background: #1e272e;
+        }
+
+
+        /* =========================
+           EVENT MONITOR
+        ========================== */
+
+        .event-card {
+
+            background:
+                rgba(255, 255, 255, 0.96);
+
+            padding: 32px;
+
+            border-radius: 24px;
+
+            box-shadow:
+                0 20px 45px
+                rgba(0, 0, 0, 0.22);
+        }
+
+
+        .event-card h2 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+
+        .event-list {
+            margin-top: 20px;
+        }
+
+
+        .event-item {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 13px;
+
+            margin-bottom: 10px;
+
+            background: #f7f7ff;
+
+            border-radius: 10px;
+
+            transition: 0.3s;
+        }
+
+
+        .event-item:hover {
+
+            transform:
+                translateX(5px);
+
+            background: #eeeeff;
+        }
+
+
+        .event-icon {
+
+            width: 38px;
+
+            height: 38px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #667eea;
+
+            color: white;
+
+            border-radius: 50%;
+        }
+
+
+        .event-item strong {
+
+            display: block;
+
+            color: #333;
+
+            font-size: 14px;
+        }
+
+
+        .event-item span {
+
+            color: #777;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================
+           EVENT LOG
+        ========================== */
+
+        .event-log {
+
+            margin-top: 20px;
+
+            padding: 15px;
+
+            background: #2f3542;
+
+            color: #fff;
+
+            border-radius: 12px;
+
+            min-height: 55px;
+
+            font-size: 13px;
+        }
+
+
+        #eventMessage {
+            color: #70a1ff;
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           SUCCESS MESSAGE
+        ========================== */
+
+        .success {
+
+            display: none;
+
+            margin-top: 20px;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            background: #dff9e7;
+
+            color: #218c4a;
+
+            font-weight: bold;
+
+            text-align: center;
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================== */
+
+        .footer {
+
+            text-align: center;
+
+            color: white;
+
+            margin-top: 25px;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================== */
+
+        @media (max-width: 800px) {
+
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+
+            .header h1 {
+                font-size: 30px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="container">
+
+
+        <!-- =========================
+             HEADER
+        ========================== -->
+
+        <div class="header">
+
+            <div class="icon">
+                🎫
+            </div>
+
+            <h1>
+                Campus Event Registration
+            </h1>
+
+            <p>
+                Interactive JavaScript Event Handling
+            </p>
+
+        </div>
+
+
+
+        <div class="main">
+
+
+            <!-- =========================
+                 REGISTRATION FORM
+            ========================== -->
+
+            <div class="registration-card">
+
+                <h2>
+                    📝 Register for Event
+                </h2>
+
+                <p class="subtitle">
+                    Fill in your details to participate
+                </p>
+
+
+                <form id="registrationForm">
+
+
+                    <!-- NAME -->
+
+                    <div class="input-group">
+
+                        <label>
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            placeholder="Enter your full name">
+
+                        <div
+                            class="focus-message"
+                            id="nameMessage">
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- EMAIL -->
+
+                    <div class="input-group">
+
+                        <label>
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter your email">
+
+                    </div>
+
+
+
+                    <!-- PHONE -->
+
+                    <div class="input-group">
+
+                        <label>
+                            Phone Number
+                        </label>
+
+                        <input
+                            type="text"
+                            id="phone"
+                            placeholder="Enter phone number">
+
+                    </div>
+
+
+
+                    <!-- EVENT -->
+
+                    <div class="input-group">
+
+                        <label>
+                            Select Event
+                        </label>
+
+                        <select id="event">
+
+                            <option value="">
+                                Choose an event
+                            </option>
+
+                            <option value="Tech Fest">
+                                Tech Fest 2026
+                            </option>
+
+                            <option value="Hackathon">
+                                Campus Hackathon
+                            </option>
+
+                            <option value="Cultural Fest">
+                                Cultural Fest
+                            </option>
+
+                            <option value="Sports Meet">
+                                Sports Meet
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="register-btn">
+
+                        🎟️ Register Now
+
+                    </button>
+
+
+                    <!-- INTRINSIC EVENT -->
+
+                    <button
+                        type="button"
+                        class="intrinsic-btn"
+                        onclick="intrinsicEvent()"
+                        onmouseover="showIntrinsicHover()"
+                        onmouseout="hideIntrinsicHover()">
+
+                        ⚡ Intrinsic Event Button
+
+                    </button>
+
+
+                </form>
+
+
+
+                <!-- SUCCESS -->
+
+                <div
+                    class="success"
+                    id="successMessage">
+
+                    🎉 Registration Successful!
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================
+                 EVENT MONITOR
+            ========================== -->
+
+            <div class="event-card">
+
+                <h2>
+                    ⚡ Event Monitor
+                </h2>
+
+                <p class="subtitle">
+                    Events demonstrated on this page
+                </p>
+
+
+                <div class="event-list">
+
+
+                    <!-- ONCLICK -->
+
+                    <div class="event-item">
+
+                        <div class="event-icon">
+                            🖱️
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                onclick
+                            </strong>
+
+                            <span>
+                                Button click event
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CHANGE -->
+
+                    <div class="event-item">
+
+                        <div class="event-icon">
+                            🔄
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                change
+                            </strong>
+
+                            <span>
+                                Event selection changed
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- INPUT -->
+
+                    <div class="event-item">
+
+                        <div class="event-icon">
+                            ⌨️
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                input
+                            </strong>
+
+                            <span>
+                                Detects typing
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- FOCUS -->
+
+                    <div class="event-item">
+
+                        <div class="event-icon">
+                            🎯
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                focus
+                            </strong>
+
+                            <span>
+                                Input receives focus
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- BLUR -->
+
+                    <div class="event-item">
+
+                        <div class="event-icon">
+                            👋
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                blur
+                            </strong>
+
+                            <span>
+                                Input loses focus
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- MOUSEOVER -->
+
+                    <div class="event-item">
+
+                        <div class="event-icon">
+                            🖱️
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                mouseover
+                            </strong>
+
+                            <span>
+                                Mouse enters button
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- MOUSEOUT -->
+
+                    <div class="event-item">
+
+                        <div class="event-icon">
+                            🚪
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                mouseout
+                            </strong>
+
+                            <span>
+                                Mouse leaves button
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- SUBMIT -->
+
+                    <div class="event-item">
+
+                        <div class="event-icon">
+                            📤
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                submit
+                            </strong>
+
+                            <span>
+                                Form submission event
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ADD EVENT LISTENER -->
+
+                    <div class="event-item">
+
+                        <div class="event-icon">
+                            ⚙️
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                addEventListener()
+                            </strong>
+
+                            <span>
+                                Modern event handling
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- EVENT LOG -->
+
+                <div class="event-log">
+
+                    Latest Event:
+
+                    <span id="eventMessage">
+                        Waiting for interaction...
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="footer">
+
+            JavaScript Event Handling Demonstration
+
+        </div>
+
+
+    </div>
+
+
+
+    <script>
+
+
+        // ============================================
+        // GET ELEMENTS
+        // ============================================
+
+        const form =
+            document.getElementById(
+                "registrationForm"
+            );
+
+        const nameInput =
+            document.getElementById(
+                "name"
+            );
+
+        const emailInput =
+            document.getElementById(
+                "email"
+            );
+
+        const phoneInput =
+            document.getElementById(
+                "phone"
+            );
+
+        const eventSelect =
+            document.getElementById(
+                "event"
+            );
+
+        const eventMessage =
+            document.getElementById(
+                "eventMessage"
+            );
+
+        const nameMessage =
+            document.getElementById(
+                "nameMessage"
+            );
+
+        const successMessage =
+            document.getElementById(
+                "successMessage"
+            );
+
+
+
+        // ============================================
+        // 1. onclick
+        // ============================================
+
+        function intrinsicEvent() {
+
+            eventMessage.textContent =
+                "onclick → Intrinsic button clicked!";
+
+        }
+
+
+
+        // ============================================
+        // 2. mouseover
+        // ============================================
+
+        function showIntrinsicHover() {
+
+            eventMessage.textContent =
+                "mouseover → Mouse entered button";
+
+        }
+
+
+
+        // ============================================
+        // 3. mouseout
+        // ============================================
+
+        function hideIntrinsicHover() {
+
+            eventMessage.textContent =
+                "mouseout → Mouse left button";
+
+        }
+
+
+
+        // ============================================
+        // 4. change EVENT
+        // ============================================
+
+        eventSelect.addEventListener(
+            "change",
+            function () {
+
+                eventMessage.textContent =
+                    "change → Event selection changed to: "
+                    + eventSelect.value;
+
+            }
+        );
+
+
+
+        // ============================================
+        // 5. input EVENT
+        // ============================================
+
+        nameInput.addEventListener(
+            "input",
+            function () {
+
+                eventMessage.textContent =
+                    "input → User is typing: "
+                    + nameInput.value;
+
+            }
+        );
+
+
+
+        // ============================================
+        // 6. focus EVENT
+        // ============================================
+
+        nameInput.addEventListener(
+            "focus",
+            function () {
+
+                nameInput.style.borderColor =
+                    "#667eea";
+
+                nameMessage.textContent =
+                    "focus → Name field is active";
+
+                eventMessage.textContent =
+                    "focus → Name input received focus";
+
+            }
+        );
+
+
+
+        // ============================================
+        // 7. blur EVENT
+        // ============================================
+
+        nameInput.addEventListener(
+            "blur",
+            function () {
+
+                nameInput.style.borderColor =
+                    "#e5e5e5";
+
+                nameMessage.textContent =
+                    "blur → Name field lost focus";
+
+                eventMessage.textContent =
+                    "blur → Name input lost focus";
+
+            }
+        );
+
+
+
+        // ============================================
+        // 8. mouseover using
+        //    addEventListener()
+        // ============================================
+
+        const intrinsicButton =
+            document.querySelector(
+                ".intrinsic-btn"
+            );
+
+        intrinsicButton.addEventListener(
+            "mouseover",
+            function () {
+
+                eventMessage.textContent =
+                    "addEventListener() → mouseover detected";
+
+            }
+        );
+
+
+
+        // ============================================
+        // 9. mouseout using
+        //    addEventListener()
+        // ============================================
+
+        intrinsicButton.addEventListener(
+            "mouseout",
+            function () {
+
+                eventMessage.textContent =
+                    "addEventListener() → mouseout detected";
+
+            }
+        );
+
+
+
+        // ============================================
+        // 10. SUBMIT EVENT
+        // ============================================
+
+        form.addEventListener(
+            "submit",
+            function (event) {
+
+                event.preventDefault();
+
+
+                const name =
+                    nameInput.value.trim();
+
+                const email =
+                    emailInput.value.trim();
+
+                const phone =
+                    phoneInput.value.trim();
+
+                const selectedEvent =
+                    eventSelect.value;
+
+
+                if (
+                    name === "" ||
+                    email === "" ||
+                    phone === "" ||
+                    selectedEvent === ""
+                ) {
+
+                    alert(
+                        "Please fill all the details."
+                    );
+
+                    eventMessage.textContent =
+                        "submit → Validation failed";
+
+                    return;
+
+                }
+
+
+                successMessage.style.display =
+                    "block";
+
+                successMessage.textContent =
+                    "🎉 " +
+                    name +
+                    ", you are registered for " +
+                    selectedEvent +
+                    "!";
+
+
+                eventMessage.textContent =
+                    "submit → Registration completed successfully";
+
+            }
+        );
+
+
+
+        // ============================================
+        // ADDITIONAL addEventListener()
+        // ============================================
+
+        emailInput.addEventListener(
+            "input",
+            function () {
+
+                if (
+                    emailInput.value.includes("@")
+                ) {
+
+                    emailInput.style.borderColor =
+                        "#2ecc71";
+
+                } else {
+
+                    emailInput.style.borderColor =
+                        "#ff4757";
+
+                }
+
+            }
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>

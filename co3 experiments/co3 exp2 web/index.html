@@ -1,0 +1,882 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Registration System</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        /* Header */
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 38px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Main Layout */
+
+        .main {
+            display: grid;
+            grid-template-columns: 330px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        /* Registration Form */
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.96);
+            padding: 30px;
+            border-radius: 22px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-card h2 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-card .subtitle {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 7px;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 13px;
+            border: 2px solid #e5e5e5;
+            border-radius: 10px;
+            outline: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Add Button */
+
+        .add-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Student List */
+
+        .list-card {
+            background: rgba(255, 255, 255, 0.96);
+            padding: 30px;
+            border-radius: 22px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .list-header h2 {
+            color: #333;
+        }
+
+        .count {
+            background: #667eea;
+            color: white;
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* Empty Message */
+
+        .empty {
+            text-align: center;
+            padding: 45px 20px;
+            color: #999;
+        }
+
+        .empty-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        /* Student Row */
+
+        .student-row {
+            display: grid;
+            grid-template-columns: 45px 1fr 1fr 1fr 80px;
+            gap: 12px;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f7f7ff;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            transition: 0.3s;
+        }
+
+        .student-row:hover {
+            transform: translateX(5px);
+            background: #eeeeff;
+        }
+
+        .number {
+            width: 35px;
+            height: 35px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .student-info {
+            font-size: 14px;
+        }
+
+        .student-info strong {
+            display: block;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .student-info span {
+            color: #777;
+            font-size: 13px;
+        }
+
+        /* Remove Button */
+
+        .remove-btn {
+            border: none;
+            background: #ff4757;
+            color: white;
+            padding: 9px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #e84118;
+            transform: scale(1.05);
+        }
+
+        /* Clear Button */
+
+        .clear-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #2f3542;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .clear-btn:hover {
+            background: #1e272e;
+            transform: translateY(-2px);
+        }
+
+        /* Status */
+
+        .status {
+            margin-top: 18px;
+            padding: 12px;
+            text-align: center;
+            border-radius: 10px;
+            background: #f1f2f6;
+            color: #555;
+            font-size: 14px;
+        }
+
+        #statusText {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 800px) {
+
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .student-row {
+                grid-template-columns: 40px 1fr 70px;
+            }
+
+            .student-row .department,
+            .student-row .register {
+                display: none;
+            }
+
+            .header h1 {
+                font-size: 30px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="container">
+
+
+        <!-- HEADER -->
+
+        <div class="header">
+
+            <h1>🎓 Student Registration</h1>
+
+            <p>
+                Dynamic Student Registration List Using DOM
+            </p>
+
+        </div>
+
+
+        <div class="main">
+
+
+            <!-- REGISTRATION FORM -->
+
+            <div class="form-card">
+
+                <h2>📝 Register Student</h2>
+
+                <p class="subtitle">
+                    Enter student details below
+                </p>
+
+
+                <!-- Student Name -->
+
+                <div class="input-group">
+
+                    <label for="studentName">
+                        Student Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="studentName"
+                        placeholder="Enter student name">
+
+                </div>
+
+
+                <!-- Register Number -->
+
+                <div class="input-group">
+
+                    <label for="registerNumber">
+                        Register Number
+                    </label>
+
+                    <input
+                        type="text"
+                        id="registerNumber"
+                        placeholder="Enter register number">
+
+                </div>
+
+
+                <!-- Department -->
+
+                <div class="input-group">
+
+                    <label for="department">
+                        Department
+                    </label>
+
+                    <select id="department">
+
+                        <option value="">
+                            Select Department
+                        </option>
+
+                        <option value="Information Technology">
+                            Information Technology
+                        </option>
+
+                        <option value="Computer Science">
+                            Computer Science
+                        </option>
+
+                        <option value="Electronics and Communication">
+                            Electronics and Communication
+                        </option>
+
+                        <option value="Artificial Intelligence">
+                            Artificial Intelligence
+                        </option>
+
+                        <option value="Mechanical Engineering">
+                            Mechanical Engineering
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Add Student -->
+
+                <button
+                    class="add-btn"
+                    id="addStudent">
+
+                    ➕ Add Student
+
+                </button>
+
+
+                <!-- Status -->
+
+                <div class="status">
+
+                    Status:
+                    <span id="statusText">
+                        Ready to add student
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- STUDENT LIST -->
+
+            <div class="list-card">
+
+
+                <div class="list-header">
+
+                    <h2>👥 Registered Students</h2>
+
+                    <span
+                        class="count"
+                        id="studentCount">
+
+                        0 Students
+
+                    </span>
+
+                </div>
+
+
+                <!-- Table Head -->
+
+                <div
+                    class="student-row"
+                    style="background:#667eea;color:white;border:none;">
+
+                    <div>#</div>
+
+                    <div>
+                        Student Name
+                    </div>
+
+                    <div class="register">
+                        Register Number
+                    </div>
+
+                    <div class="department">
+                        Department
+                    </div>
+
+                    <div>
+                        Action
+                    </div>
+
+                </div>
+
+
+                <!-- Dynamic Students -->
+
+                <div id="studentList">
+
+                    <div class="empty" id="emptyMessage">
+
+                        <div class="empty-icon">
+                            👨‍🎓
+                        </div>
+
+                        <p>
+                            No students registered yet.
+                        </p>
+
+                        <small>
+                            Add a student using the form.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Clear All -->
+
+                <button
+                    class="clear-btn"
+                    id="clearAll">
+
+                    🗑️ Clear All Students
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+
+        // ============================================
+        // GET HTML ELEMENTS
+        // ============================================
+
+        const studentName =
+            document.getElementById("studentName");
+
+        const registerNumber =
+            document.getElementById("registerNumber");
+
+        const department =
+            document.getElementById("department");
+
+        const addButton =
+            document.getElementById("addStudent");
+
+        const studentList =
+            document.getElementById("studentList");
+
+        const clearButton =
+            document.getElementById("clearAll");
+
+        const studentCount =
+            document.getElementById("studentCount");
+
+        const statusText =
+            document.getElementById("statusText");
+
+        const emptyMessage =
+            document.getElementById("emptyMessage");
+
+
+        // ============================================
+        // ADD STUDENT
+        // ============================================
+
+        addButton.addEventListener("click", function () {
+
+
+            // Get input values
+
+            const name =
+                studentName.value.trim();
+
+            const regNo =
+                registerNumber.value.trim();
+
+            const dept =
+                department.value;
+
+
+            // Check empty fields
+
+            if (name === "" ||
+                regNo === "" ||
+                dept === "") {
+
+                alert(
+                    "Please enter all student details."
+                );
+
+                return;
+
+            }
+
+
+            // Remove empty message
+
+            if (emptyMessage) {
+
+                emptyMessage.remove();
+
+            }
+
+
+            // ========================================
+            // createElement()
+            // ========================================
+
+            const studentRow =
+                document.createElement("div");
+
+            studentRow.className =
+                "student-row";
+
+
+            // ========================================
+            // Create student number
+            // ========================================
+
+            const number =
+                document.createElement("div");
+
+            number.className =
+                "number";
+
+            number.textContent =
+                studentList.children.length + 1;
+
+
+            // ========================================
+            // Create name element
+            // ========================================
+
+            const nameDiv =
+                document.createElement("div");
+
+            nameDiv.className =
+                "student-info";
+
+            nameDiv.innerHTML =
+                "<strong>" +
+                name +
+                "</strong>" +
+                "<span>Student</span>";
+
+
+            // ========================================
+            // Create register number
+            // ========================================
+
+            const regDiv =
+                document.createElement("div");
+
+            regDiv.className =
+                "student-info register";
+
+            regDiv.innerHTML =
+                "<strong>Register No.</strong>" +
+                "<span>" +
+                regNo +
+                "</span>";
+
+
+            // ========================================
+            // Create department
+            // ========================================
+
+            const deptDiv =
+                document.createElement("div");
+
+            deptDiv.className =
+                "student-info department";
+
+            deptDiv.innerHTML =
+                "<strong>Department</strong>" +
+                "<span>" +
+                dept +
+                "</span>";
+
+
+            // ========================================
+            // Create Remove Button
+            // ========================================
+
+            const removeButton =
+                document.createElement("button");
+
+            removeButton.className =
+                "remove-btn";
+
+            removeButton.textContent =
+                "Remove";
+
+
+            // ========================================
+            // appendChild()
+            // ========================================
+
+            studentRow.appendChild(number);
+
+            studentRow.appendChild(nameDiv);
+
+            studentRow.appendChild(regDiv);
+
+            studentRow.appendChild(deptDiv);
+
+            studentRow.appendChild(removeButton);
+
+
+            // Add complete row to list
+
+            studentList.appendChild(studentRow);
+
+
+            // ========================================
+            // remove()
+            // ========================================
+
+            removeButton.addEventListener(
+                "click",
+                function () {
+
+                    studentRow.remove();
+
+                    updateCount();
+
+                    statusText.textContent =
+                        "Student Removed";
+
+                    showEmptyMessage();
+
+                }
+            );
+
+
+            // Clear input fields
+
+            studentName.value = "";
+
+            registerNumber.value = "";
+
+            department.value = "";
+
+
+            updateCount();
+
+            statusText.textContent =
+                "Student Added Successfully";
+
+
+        });
+
+
+        // ============================================
+        // parentElement
+        // ============================================
+
+        function removeStudent(button) {
+
+            const row =
+                button.parentElement;
+
+            row.remove();
+
+            updateCount();
+
+        }
+
+
+        // ============================================
+        // children
+        // ============================================
+
+        function updateCount() {
+
+            const totalStudents =
+                studentList.children.length;
+
+            studentCount.textContent =
+                totalStudents +
+                (totalStudents === 1
+                    ? " Student"
+                    : " Students");
+
+
+            // Update student numbers
+
+            for (
+                let i = 0;
+                i < studentList.children.length;
+                i++
+            ) {
+
+                studentList.children[i]
+                    .querySelector(".number")
+                    .textContent = i + 1;
+
+            }
+
+        }
+
+
+        // ============================================
+        // SHOW EMPTY MESSAGE
+        // ============================================
+
+        function showEmptyMessage() {
+
+            if (studentList.children.length === 0) {
+
+                const message =
+                    document.createElement("div");
+
+                message.className =
+                    "empty";
+
+                message.innerHTML =
+                    `
+                    <div class="empty-icon">
+                        👨‍🎓
+                    </div>
+
+                    <p>
+                        No students registered yet.
+                    </p>
+
+                    <small>
+                        Add a student using the form.
+                    </small>
+                    `;
+
+                studentList.appendChild(message);
+
+            }
+
+        }
+
+
+        // ============================================
+        // CLEAR ALL STUDENTS
+        // ============================================
+
+        clearButton.addEventListener(
+            "click",
+            function () {
+
+                if (studentList.children.length === 0) {
+
+                    alert(
+                        "There are no students to remove."
+                    );
+
+                    return;
+
+                }
+
+
+                // Remove all student elements
+
+                while (
+                    studentList.children.length > 0
+                ) {
+
+                    studentList.children[0].remove();
+
+                }
+
+
+                showEmptyMessage();
+
+                updateCount();
+
+                statusText.textContent =
+                    "All Students Cleared";
+
+            }
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
+
+

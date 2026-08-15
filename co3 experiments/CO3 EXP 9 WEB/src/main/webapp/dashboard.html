@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard — Servlet Lifecycle Demonstration</title>
+<meta name="description" content="Live dashboard for the Java Servlet lifecycle demonstration, connected to /lifecycle on Apache Tomcat." />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container navbar-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">{S}</span>
+      <span class="brand-text">CO3 · EXP 9<small>Web Technology Lab</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Overview</a>
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="#log">Execution Log</a>
+    </div>
+    <a href="index.html" class="btn btn-ghost btn-sm">← Back home</a>
+  </div>
+</nav>
+
+<header class="dash-hero">
+  <div class="container">
+    <div class="dash-hero-top">
+      <div class="dash-title">
+        <span class="eyebrow"><span class="dot"></span> Live Servlet Session</span>
+        <h1>Servlet Lifecycle Demonstration</h1>
+        <p>Every refresh below sends a real HTTP GET to <code>/lifecycle</code>. The Java servlet runs <code>doGet()</code> on the server and this page reflects exactly what happened.</p>
+      </div>
+      <span id="modePill" class="status-pill preview"><span class="dot"></span> Checking connection…</span>
+    </div>
+
+    <div class="counter-card">
+      <div>
+        <div class="counter-label">Current Request Count</div>
+        <div id="counterValue" class="counter-value">0</div>
+        <div class="counter-meta">Incremented once per <b>doGet()</b> call — i.e. once per page refresh</div>
+      </div>
+      <div class="dash-actions">
+        <button id="refreshBtn" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+          Refresh Servlet
+        </button>
+        <span class="endpoint-tag">GET <b>/lifecycle</b></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="padding-top:56px;">
+  <div class="container">
+
+    <div id="previewNotice" class="notice-banner" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      <span>
+        <b>Preview mode.</b> This page isn't currently talking to a deployed servlet, so the counter and log below are simulated locally.
+        Deploy <code>CO3-EXP9-WEB.war</code> to Tomcat and open this page from <code>http://localhost:8080/CO3-EXP9-WEB/dashboard.html</code>
+        to see real <code>/lifecycle</code> responses.
+      </span>
+    </div>
+
+    <div class="section-head" style="margin-bottom:26px;">
+      <span class="kicker">Container-managed methods</span>
+      <h2>Lifecycle stages</h2>
+      <p>Constructor and <code>init()</code> fire once for the life of the servlet instance. <code>doGet()</code> fires on every request.</p>
+    </div>
+
+    <div class="lifecycle-grid">
+
+      <div class="life-card">
+        <div class="life-card-top">
+          <div class="life-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9 9h6v6H9z"/></svg>
+          </div>
+          <span class="badge once">Executed Once</span>
+        </div>
+        <h3><code>Constructor</code></h3>
+        <p>Creates the servlet object.</p>
+        <div class="life-count">1×</div>
+        <div class="life-count-label">on servlet load</div>
+      </div>
+
+      <div class="life-card">
+        <div class="life-card-top">
+          <div class="life-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+          </div>
+          <span class="badge once">Executed Once</span>
+        </div>
+        <h3><code>init()</code></h3>
+        <p>Initializes the servlet before handling requests.</p>
+        <div class="life-count">1×</div>
+        <div class="life-count-label">before first request</div>
+      </div>
+
+      <div class="life-card highlight">
+        <div class="life-card-top">
+          <div class="life-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M4 6h16M4 18h10"/></svg>
+          </div>
+          <span class="badge live">Live · Every Request</span>
+        </div>
+        <h3><code>doGet()</code></h3>
+        <p>Processes every HTTP GET request.</p>
+        <div id="doGetCount" class="life-count">0</div>
+        <div class="life-count-label">requests served so far</div>
+      </div>
+
+      <div class="life-card">
+        <div class="life-card-top">
+          <div class="life-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m3 0-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+          </div>
+          <span class="badge stop">On Stop / Redeploy</span>
+        </div>
+        <h3><code>destroy()</code></h3>
+        <p>Releases resources when the servlet is stopped or redeployed.</p>
+        <div class="life-count">—</div>
+        <div class="life-count-label">not yet triggered</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:26px;">
+      <span class="kicker">Sequence</span>
+      <h2>Lifecycle flow</h2>
+      <p>The container walks this path once, then loops the highlighted step for every request.</p>
+    </div>
+    <div class="flow-wrap">
+      <div class="flow-row">
+        <div class="flow-node" id="flowConstructor">Constructor</div>
+        <span class="flow-arrow"><svg viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M1 8h20M15 2l6 6-6 6"/></svg></span>
+        <div class="flow-node" id="flowInit">init()</div>
+        <span class="flow-arrow"><svg viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M1 8h20M15 2l6 6-6 6"/></svg></span>
+        <div class="flow-node active" id="flowGet">service() / doGet()</div>
+        <span class="flow-arrow"><svg viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M1 8h20M15 2l6 6-6 6"/></svg></span>
+        <div class="flow-node" id="flowDestroy">destroy()</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:26px;">
+      <span class="kicker">Reading the sequence</span>
+      <h2>How it works</h2>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">1</div>
+        <h4>First request ever</h4>
+        <p>The container has no instance yet, so it builds one and prepares it before answering.</p>
+        <div class="seq">Constructor → init() → doGet()</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">2</div>
+        <h4>Every refresh after that</h4>
+        <p>The same instance is reused — no re-construction, no re-init. Only the request handler runs.</p>
+        <div class="seq">doGet() executes again</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">3</div>
+        <h4>Stop or redeploy</h4>
+        <p>Before Tomcat unloads the servlet, it gives it one last chance to clean up.</p>
+        <div class="seq">destroy() executes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="log" class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:26px;">
+      <span class="kicker">console.log</span>
+      <h2>Execution log</h2>
+      <p>Mirrors what Tomcat prints to its own console for this servlet.</p>
+    </div>
+
+    <div class="console-panel">
+      <div class="console-topbar">
+        <div class="console-dots"><span></span><span></span><span></span></div>
+        <div class="console-title">tomcat — LifecycleServlet — /lifecycle</div>
+      </div>
+      <div id="consoleBody" class="console-body"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <strong>CO3 · Experiment 9 · Web Technology</strong> — Servlet Lifecycle Demonstration<br>
+    Built with Jakarta Servlet API &amp; Apache Tomcat
+  </div>
+</footer>
+
+<script>
+(function () {
+  const ENDPOINT = "lifecycle"; // resolves to /<context-path>/lifecycle
+  const modePill = document.getElementById("modePill");
+  const previewNotice = document.getElementById("previewNotice");
+  const counterValue = document.getElementById("counterValue");
+  const doGetCount = document.getElementById("doGetCount");
+  const consoleBody = document.getElementById("consoleBody");
+  const refreshBtn = document.getElementById("refreshBtn");
+
+  let liveMode = null;      // true = talking to real servlet, false = simulated preview
+  let bootstrapped = false; // whether constructor/init lines have been printed
+
+  function timestamp() {
+    return new Date().toTimeString().slice(0, 8);
+  }
+
+  function appendLog(text, cls) {
+    const line = document.createElement("div");
+    line.className = "console-line" + (cls ? " " + cls : "");
+    line.innerHTML = '<span class="ts">[' + timestamp() + ']</span><span class="msg">' + text + "</span>";
+    consoleBody.appendChild(line);
+    consoleBody.scrollTop = consoleBody.scrollHeight;
+  }
+
+  function setMode(isLive) {
+    liveMode = isLive;
+    if (isLive) {
+      modePill.className = "status-pill live";
+      modePill.innerHTML = '<span class="dot"></span> Connected to Tomcat';
+      previewNotice.style.display = "none";
+    } else {
+      modePill.className = "status-pill preview";
+      modePill.innerHTML = '<span class="dot"></span> Preview mode';
+      previewNotice.style.display = "flex";
+    }
+  }
+
+  function bumpCounter(n) {
+    counterValue.textContent = n;
+    doGetCount.textContent = n;
+    counterValue.classList.remove("bump");
+    void counterValue.offsetWidth; // restart animation
+    counterValue.classList.add("bump");
+  }
+
+  function flashFlow() {
+    const node = document.getElementById("flowGet");
+    node.style.transform = "translateY(-3px)";
+    setTimeout(() => (node.style.transform = ""), 300);
+  }
+
+  function handleFirstConnection() {
+    if (bootstrapped) return;
+    bootstrapped = true;
+    appendLog("CONSTRUCTOR EXECUTED", "ok");
+    appendLog("INIT() EXECUTED", "init");
+  }
+
+  async function callServlet() {
+    refreshBtn.disabled = true;
+    try {
+      const res = await fetch(ENDPOINT, { cache: "no-store" });
+      if (!res.ok) throw new Error("Servlet responded with " + res.status);
+      const data = await res.json();
+
+      if (!bootstrapped) {
+        setMode(true);
+        handleFirstConnection();
+      }
+      bumpCounter(data.requestCount);
+      appendLog("DOGET() EXECUTED - Request " + data.requestCount, "get");
+      flashFlow();
+    } catch (err) {
+      // No live servlet reachable (e.g. static preview) — fall back to a local simulation
+      if (!bootstrapped) {
+        setMode(false);
+        handleFirstConnection();
+      }
+      const next = parseInt(doGetCount.textContent || "0", 10) + 1;
+      bumpCounter(next);
+      appendLog("DOGET() EXECUTED - Request " + next + " (simulated)", "get");
+      flashFlow();
+    } finally {
+      refreshBtn.disabled = false;
+    }
+  }
+
+  refreshBtn.addEventListener("click", callServlet);
+
+  // Fire once on load, exactly like a fresh page load hitting the servlet.
+  callServlet();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Result Processing</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="card">
+
+        <div class="header">
+            <div class="icon">🎓</div>
+            <h1>Student Result Portal</h1>
+            <p>Online Student Result Processing System</p>
+        </div>
+
+        <form action="result" method="post">
+
+            <h2>Student Details</h2>
+
+            <div class="row">
+
+                <div class="field">
+                    <label>Student Name</label>
+                    <input type="text"
+                           name="studentName"
+                           placeholder="Enter student name">
+                </div>
+
+                <div class="field">
+                    <label>Register Number</label>
+                    <input type="text"
+                           name="registerNumber"
+                           placeholder="Enter register number">
+                </div>
+
+            </div>
+
+            <h2>Subject Marks</h2>
+
+            <div class="marks">
+
+                <div class="subject">
+                    <label>Subject 1</label>
+                    <input type="text"
+                           name="mark1"
+                           placeholder="0 - 100">
+                </div>
+
+                <div class="subject">
+                    <label>Subject 2</label>
+                    <input type="text"
+                           name="mark2"
+                           placeholder="0 - 100">
+                </div>
+
+                <div class="subject">
+                    <label>Subject 3</label>
+                    <input type="text"
+                           name="mark3"
+                           placeholder="0 - 100">
+                </div>
+
+                <div class="subject">
+                    <label>Subject 4</label>
+                    <input type="text"
+                           name="mark4"
+                           placeholder="0 - 100">
+                </div>
+
+                <div class="subject">
+                    <label>Subject 5</label>
+                    <input type="text"
+                           name="mark5"
+                           placeholder="0 - 100">
+                </div>
+
+            </div>
+
+            <button type="submit">
+                Calculate Result
+                <span>→</span>
+            </button>
+
+        </form>
+
+        <div class="footer">
+            🔒 Student result information is securely processed
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
